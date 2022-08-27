@@ -14,5 +14,4 @@ for i in range(0, len(file_df)):
         
         
 for space in space_ls:
-    print(space.visitor_dist)
-    px.histogram(space.visitor_dist, x = "time", y = "visitors").show()
+    print(type(space.floor_num))
