@@ -6,7 +6,7 @@ class Space:
         constructor
         '''
         self.building_name = building_name
-        self.floor_num = ""
+        self.floor = "1"
         self.row = row
         self.space_name = ""
         self.visitor_dist = pd.DataFrame()
@@ -23,6 +23,7 @@ class Space:
         self.setCloseHr()
         self.setHasCharger()
         self.setHasComp()
+        self.setFloor()
         
 
     def setVisitorsDist(self):
@@ -99,4 +100,4 @@ class Space:
         '''
         set floor number
         '''
-        self.floor_num = self.row["floor"]
+        self.floor_num = str(self.row["floor"])

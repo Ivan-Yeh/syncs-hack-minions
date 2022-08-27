@@ -1,14 +1,13 @@
-import parse_csv
-import space
+import pages.space
 from dash import Dash, html, dcc, Input, Output, page_container
 import dash_bootstrap_components as dbc
 import plotly.express as px
 from parse_csv import file_df, space_ls
 import webbrowser
 
-project_title = "Spot?"
+project_title = "Alcove"
 
-app = Dash(__name__, use_pages = True, external_stylesheets = [dbc.themes.FLATLY], title = project_title, suppress_callback_exceptions = True)
+app = Dash(__name__, use_pages = True, title = project_title, suppress_callback_exceptions = True)
 
 navbar = dbc.NavbarSimple(children = [
     dbc.NavItem(dbc.NavLink("Home", href = "/")),
