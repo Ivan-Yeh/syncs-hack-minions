@@ -9,7 +9,7 @@ app = Dash(__name__, use_pages = True, title = project_title, suppress_callback_
 
 navbar = dbc.NavbarSimple(children = [
     dbc.NavItem(dbc.NavLink("Home", href = "/")),
-    dbc.NavItem(dbc.NavLink("Explore", href = "/discover")),
+    dbc.NavItem(dbc.NavLink("Discover", href = "/discover")),
     ],
     brand = project_title,
     brand_href = "/"
