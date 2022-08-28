@@ -5,8 +5,6 @@ from dash import Dash, html, dcc, Input, Output, callback
 import dash
 import dash_bootstrap_components as dbc
 import plotly.express as px
-from parse_csv import file_df, space_ls
-import pages.discover as discover
 
 project_title = "Alcove"
 
@@ -44,15 +42,23 @@ layout = dbc.Container(children = [
 # discover ABS
 @callback(Output("maps", "children"), Input("ABS-discover", "n_clicks"))
 def ABSDiscover(n_clicks):
-    discover.Selection.building = "ABS"
+    # discover.Selection.building = "ABS"
     return None
 
-# locate ABS
-@callback(Output("locate", "children"), Input("ABS", "n_clicks"))
-def ABSDiscover(n_clicks):
-    map = html.Div([
-            html.Img(src="assets/ABS_Map.png", style={'height':'100%', 'width':'100%'})
+# locate 
+@callback(Output("locate", "children"), [Input("ABS", "n_clicks"), Input("SIT", "n_clicks")])
+def ABSDiscover(ABS, SIT):
+    ctx = dash.callback_context
+    input_id = ctx.triggered[0]["prop_id"].split(".")[0]
+    
+    if input_id == "ABS":
+        map = html.Div([
+                html.Img(src="assets/ABS_Map.png", style={'height':'100%', 'width':'100%'})
+            ])
+    else:
+        map = html.Div([
+            html.Img(src="assets/SIT_Map.png", style={'height':'100%', 'width':'100%'})
         ])
-    if n_clicks:
+    if ABS or SIT:
         return map
     return map

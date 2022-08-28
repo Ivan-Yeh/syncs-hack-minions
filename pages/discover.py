@@ -1,114 +1,72 @@
-from subprocess import call
 import pages.space
-from dash import Dash, html, dcc, Input, Output, callback, ctx
+from dash import Dash, html, dcc, Input, Output, callback
+import pandas as pd
 import dash
 import dash_bootstrap_components as dbc
 import plotly.express as px
-from parse_csv import file_df, space_ls
+import parse_csv
 
-class Selection:
-    building = "ABS"
-    floor = "1"
-    card = "1"
-
-project_title = "Alcove"
+space_ls, file_df = parse_csv.main()
 
 dash.register_page(__name__, path = "/discover", title = "Discover")
 
-layout = html.Div(children = [
-        dbc.Container([
-            html.Div(children=[
-                dcc.Dropdown(id = "select-study-space", options=file_df['space_name'].unique(), value='space_1'),
-                dcc.Graph(id='test-graph')
-            ])
+layout = dbc.Container([
+    html.Br(),
+    dbc.Row([
+        dbc.Col([
+            html.H3("Select a study space"),
+            dcc.Dropdown(id = "select-study-space", options=file_df['space_name'].unique(), value='Space 1'),
+            html.Hr(),
+            html.Div(id = "additional-info")
+            
+            
+            
+            
+        ]),
+        dbc.Col([
+            html.Div(id = "floor-map")
+        ]),
+        dbc.Col([
+            html.Div(id = "space-info")
         ])
+        
+    ]),
+    
 ])
 
-@callback(
-    Output(component_id='test-graph', component_property='figure'),
-    Input(component_id="select-study-space", component_property='value')
-)
+@callback([Output("space-info", "children"), Output("floor-map", "children"), Output("additional-info", "children")], Input("select-study-space", "value"))
+def display(selected_space):
 
-def update_graph(selected_space):
-    filtered_data = file_df[file_df['space_name'] == selected_space]
-    # Getting the space object from selected name
     for space in space_ls:
         if space.space_name == selected_space:
             obj = space
-
-    my_fig = px.histogram(obj.visitor_dist,
-                            x = "time", y = "visitors",
-                            title=f'Number of visitors per hour in {selected_space}')
-    return my_fig
-
-# cards = []
-# buttonIDList = []
-# for space in space_ls:
-#     if space.floor == Selection.floor:
-#         card = dbc.Card(
-#             [
-#                 dbc.CardBody(
-#                     [
-#                         html.H4(space.space_name, className="card-title"),
-#                         html.P(
-#                             f"Some example text for {space.space_name}.",
-#                             className="card-text",
-#                         ),
-#                         dbc.Button("Details", color="primary", id="button-"+space.space_name[-1:]),
-#                     ]
-#                 ),
-#             ],
-#             style={"width": "18rem", "padding": "2rem 1rem"},
-#         )
-#         buttonIDList.append("button-"+space.space_name[-1:])
-#         cards.append(card)
-
-# layout = html.Div(children=[
-#         dbc.Container([
-#             html.Div(
-#                 [
-#                     dbc.Row(
-#                         [
-#                         dbc.Col(html.Div(cards)),
-#                         dbc.Col(html.Div(html.Img(src="assets/1.png"), id="col_2_1")),
-#                         dbc.Col(id="none"),
-#                         dbc.Col(html.Div("column three")),
-#                         ]
-#                     ),
-#                 ])
-#         ])
-# ])
-
-
-# @callback(
-#     Output(component_id='col_2', component_property='children'),
-#     Input("button-1", "n_clicks"),
-#     Input("button-2", "n_clicks")
-# )
-# def changeMap(n_clicks):
-#     if n_clicks:
-#         # for space in space_ls:
-#         if :
-#             return html.Img(src="assets/1.png")
-#         elif "button-2" == ctx.triggered_id:
-#             return html.Img(src="assets/2.png")
-
-# isCalled = False
-# for buttonID in buttonIDList:
-#     # Button callback on cards
-#     @callback(
-#         Output(component_id='col_2', component_property='children'),
-#         Input(buttonID, 'n_clicks')
-#     )
-#     def changeMap(n_clicks):
-#         isCalled = True
-#         if n_clicks:
-#             for space in space_ls:
-#                 num = space.space_name[-1:]
-#                 if "button-"+num == ctx.triggered_id:
-#                     return html.Img(src="assets/"+num+".png")
-#             if buttonIDList[-1] == buttonID:
-#                 return html.Img(src="assets/1.png")
-#     if isCalled:
-#         break
-
+            break
+    
+    output = html.Div(children =[
+        dcc.Graph(figure = px.histogram(obj.visitor_dist, x = "time", y = "visitors", title=f'Number of visitors over time {selected_space}')),
+        html.Hr(),
+        dcc.Graph(figure = px.histogram(obj.noise_dist, x = "time", y = "noise_level", title=f'Noise level over time in {selected_space}')),
+    ])
+    floor_map = html.Div(children = [html.Img(src = "assets/lvl_" + obj.floor + ".png", style={'height':'100%', 'width':'100%'})])
+    
+    if obj.has_charger:
+        charger_info = html.H5("Yes")
+    else:
+        charger_info = html.H5("No")
+    
+    if obj.has_comp:
+        comp_info = html.H5("Yes")
+    else:
+        comp_info = html.H5("No")
+        
+    additional_info = html.Div(children = [
+        html.H3("Additional Information"),
+        html.H4("Opening Hours: " + obj.open_hr + " to " + obj.close_hr, style={"font-weight": "bold"}),
+        html.Br(),
+        html.H5("Charging Spots Available?", style={"font-weight": "bold"}),
+        charger_info,
+        html.H5("Computers Available?", style={"font-weight": "bold"}),
+        comp_info
+        
+    ])
+    return output, floor_map, additional_info

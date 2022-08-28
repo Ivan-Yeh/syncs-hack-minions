@@ -2,7 +2,6 @@ import pages.space
 from dash import Dash, html, dcc, Input, Output, page_container
 import dash_bootstrap_components as dbc
 import plotly.express as px
-from parse_csv import file_df, space_ls
 import webbrowser
 
 project_title = "Alcove"
@@ -11,7 +10,7 @@ app = Dash(__name__, use_pages = True, title = project_title, suppress_callback_
 
 navbar = dbc.NavbarSimple(children = [
     dbc.NavItem(dbc.NavLink("Home", href = "/")),
-    dbc.NavItem(dbc.NavLink("Discover", href = "/discover")),
+    dbc.NavItem(dbc.NavLink("Explore", href = "/discover")),
     ],
     brand = project_title,
     brand_href = "/"
@@ -24,4 +23,4 @@ app.layout = html.Div(children = [
 
 if __name__ == '__main__':
     webbrowser.open_new_tab("http://127.0.0.1:8050/")
-    app.run_server(debug=True)
+    app.run_server(debug = True)
