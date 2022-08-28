@@ -2,7 +2,6 @@ import pages.space
 from dash import Dash, html, dcc, Input, Output, page_container
 import dash_bootstrap_components as dbc
 import plotly.express as px
-import webbrowser
 
 project_title = "Alcove"
 
@@ -22,5 +21,4 @@ app.layout = html.Div(children = [
 ])
 
 if __name__ == '__main__':
-    webbrowser.open_new_tab("http://127.0.0.1:8050/")
-    app.run_server(debug = True)
+    app.run_server(debug = False)
