@@ -1,3 +1,4 @@
+from operator import invert
 import pages.space
 from dash import Dash, html, dcc, Input, Output, page_container
 import dash_bootstrap_components as dbc
@@ -12,7 +13,7 @@ navbar = dbc.NavbarSimple(children = [
     dbc.NavItem(dbc.NavLink("Discover", href = "/discover")),
     ],
     brand = project_title,
-    brand_href = "/"
+    brand_href = "/",
 )
 
 
